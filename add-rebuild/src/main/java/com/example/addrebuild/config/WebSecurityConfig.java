@@ -1,5 +1,6 @@
 package com.example.addrebuild.config;
 
+import com.example.addrebuild.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +16,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig  {
-    private final
+    private final UserService userService;
+    private final  EncriptionConfig encriptionConfig;
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder) throws Exception {
-        return builder.userDetailsService(userService).passwordEncoder(encoder()).and().build();
+        return builder.userDetailsService(userService)
+                .passwordEncoder(encriptionConfig.getPasswordEncoder()).and().build();
     }
 
     @Bean
@@ -28,8 +31,7 @@ public class WebSecurityConfig  {
                 .antMatchers("/securityNone").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic()
-                .authenticationEntryPoint(authenticationEntryPoint);
+                .httpBasic();
 
 
         return http.build();

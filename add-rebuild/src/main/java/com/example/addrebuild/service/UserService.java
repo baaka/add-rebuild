@@ -1,10 +1,12 @@
 package com.example.addrebuild.service;
 
 import com.example.addrebuild.domain.User;
-import com.example.addrebuild.exception.UserNotFoundException;
 import com.example.addrebuild.model.UserRequestModel;
 import com.example.addrebuild.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepo userRepo;
 
@@ -69,4 +71,8 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return getByUsername(username);
+    }
 }
