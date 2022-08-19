@@ -14,8 +14,11 @@ import java.util.List;
 public class AppFormService {
     private final AppFormRepository appFormRepository;
 
-    public AppFormService(AppFormRepository appFormRepository) {
+    private final UserService userService;
+
+    public AppFormService(AppFormRepository appFormRepository, UserService userService) {
         this.appFormRepository = appFormRepository;
+        this.userService = userService;
     }
 
     public List<AppForm> getAppForms() {
@@ -25,6 +28,7 @@ public class AppFormService {
 
     public AppForm addAppForm(AppForm appForm) {
         appForm.setCreationTime(new Date());
+        appForm.setAuthor(userService.getCurrentUser());
         return appFormRepository.saveAndFlush(appForm);
     }
 
@@ -33,6 +37,7 @@ public class AppFormService {
             throw new AppException(AppException.Type.FIELD_REQUIRED);
         }
 
+        appForm.setAuthor(userService.getCurrentUser());
         return appFormRepository.saveAndFlush(appForm);
     }
 

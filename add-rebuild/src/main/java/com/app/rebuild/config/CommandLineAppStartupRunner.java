@@ -7,20 +7,28 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 public class CommandLineAppStartupRunner implements CommandLineRunner {
     @Autowired
     UserRepository userRepository;
 
+    private final List<String> initialUsers = Arrays.asList("admin", "user1", "user2", "user3");
+
     @Override
     public void run(String... args) throws Exception {
-        User user = userRepository.findByUsername("admin");
 
-        if (user == null) {
-            User u = new User();
-            u.setUsername("admin");
-            u.setPassword(new BCryptPasswordEncoder(12).encode("admin"));
-            userRepository.save(u);
+        for (String userName : initialUsers) {
+            User user = userRepository.findByUsername(userName);
+            if (user == null) {
+                User u = new User();
+                u.setUsername(userName);
+                u.setPassword(new BCryptPasswordEncoder(12).encode(userName));
+                userRepository.save(u);
+            }
         }
     }
 }

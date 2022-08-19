@@ -35,9 +35,7 @@ public class DonationService {
         Donation donation = new Donation();
         donation.setAmount(request.getAmount());
         donation.setCurrency(request.getCurrency());
-
-        User author = userService.getById(request.getAuthorId());
-        donation.setAuthor(author);
+        donation.setAuthor(userService.getCurrentUser());
 
         AppForm appForm = appFormService.getAppFormById(request.getAppFormId());
         donation.setAppForm(appForm);

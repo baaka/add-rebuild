@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DonationRequestModel {
-    private long authorId;
     private long appFormId;
     private double amount;
     private Currency currency;
