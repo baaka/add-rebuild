@@ -28,7 +28,7 @@ public class DonationService {
     }
 
     public List<Donation> getDonationsByAppFormId(long appFormId) {
-        return donationRepo.getDonationsByAppAppForm(appFormId);
+        return donationRepo.getDonationsByAppForm(appFormId);
     }
 
     public Donation addDonation(DonationRequestModel request) {
