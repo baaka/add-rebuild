@@ -1,5 +1,6 @@
 package com.example.addrebuild.api;
 
+import com.example.addrebuild.AppConstants;
 import com.example.addrebuild.domain.User;
 import com.example.addrebuild.model.UserRequestModel;
 import com.example.addrebuild.service.UserService;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest/v1/users")
+@RequestMapping(AppConstants.APP_REST_CONTEXT_PATH + "/users")
 @RequiredArgsConstructor
 public class UserRestController {
     private final UserService userService;
