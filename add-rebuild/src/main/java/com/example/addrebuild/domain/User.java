@@ -29,6 +29,7 @@ public class User implements UserDetails, Serializable {
     private String nickname;
     private String email;
     private String password;
+    private String IDNumber;
     private boolean active = false;
     private boolean blocked = false;
     @JsonIgnore

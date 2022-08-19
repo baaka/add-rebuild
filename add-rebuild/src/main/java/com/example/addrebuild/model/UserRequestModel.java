@@ -7,4 +7,5 @@ public class UserRequestModel {
     public String nickname;
     public boolean active;
     public boolean blocked;
+    public String IDNumber;
 }

@@ -4,6 +4,9 @@ import com.example.addrebuild.domain.User;
 import com.example.addrebuild.model.UserRequestModel;
 import com.example.addrebuild.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,14 +21,14 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepo userRepo;
 
-    public List<User> load(int page, int limit) {
+    public List<User> load() {
         return userRepo.findAll();
     }
 
 
     public User getByUsername(String username) {
         User user = userRepo.findByUsername(username);
-        if(user!=null) {
+        if (user != null) {
             user.setPassword("");
         }
         return user;
@@ -33,15 +36,14 @@ public class UserService implements UserDetailsService {
 
     public User getById(Long id) {
         User user = userRepo.findById(id).orElse(null);
-        if(user!=null) {
+        if (user != null) {
             user.setPassword("");
         }
 
         return user;
     }
 
-    public User add(UserRequestModel user)  {
-
+    public User add(UserRequestModel user) {
         User savedUser = userRepo.save(User.builder()
                 .username(user.username)
                 .email(user.email)
@@ -49,13 +51,19 @@ public class UserService implements UserDetailsService {
                 .nickname(user.nickname)
                 .blocked(user.blocked)
                 .active(user.active)
+                .IDNumber(user.IDNumber)
                 .build());
 
         return savedUser;
     }
 
     public User update(UserRequestModel user, Long id) {
+        User currentUser = getCurrentUser();
         User u = userRepo.findById(id).get();
+
+        if(u.getId() != currentUser.getId() && !currentUser.isAdmin()) {
+            return null;
+        }
 
         u.setUsername(user.username);
         u.setPassword(passwordEncoder.encode(user.password));
@@ -63,6 +71,7 @@ public class UserService implements UserDetailsService {
         u.setNickname(user.nickname);
         u.setActive(user.active);
         u.setBlocked(user.blocked);
+        u.setIDNumber(user.IDNumber);
 
         return userRepo.save(u);
     }
@@ -75,4 +84,13 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getByUsername(username);
     }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            return getByUsername(authentication.getName());
+        }
+        return null;
+    }
+
 }
