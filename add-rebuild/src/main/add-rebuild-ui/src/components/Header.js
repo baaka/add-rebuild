@@ -21,7 +21,7 @@ const Header = () => {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        App
+                        App Rebuild
                     </Typography>
                     <div>
                         <Button color="inherit" onClick={()=>{}}>Logout</Button>
