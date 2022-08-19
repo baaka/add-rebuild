@@ -48,7 +48,7 @@ const AppFormAdd = ({open, setOpen}) => {
             aria-describedby="simple-modal-description"
         >
             <div className={classes.paper}>
-                <div className={classes.title}>Add App</div>
+                <div className={classes.title}>Add Application Form</div>
                 <Box display={"flex"} justifyContent={"center"} pt={2}>
                     <TextField
                         className={classes.field}

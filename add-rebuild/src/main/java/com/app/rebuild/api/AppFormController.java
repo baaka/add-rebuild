@@ -19,35 +19,16 @@ public class AppFormController {
 
     @GetMapping
     public List<AppForm> getAppForms() {
-
-//        User user = new User();
-//        user.setUsername("test user");
-//        appForm.setAuthor(user);
-
-        return getData(10);
-    }
-
-    private List<AppForm> getData(int num){
-        List<AppForm> result = new ArrayList<>();
-
-        for (int i=0;i<num;i++){
-            AppForm appForm = new AppForm();
-            appForm.setCreationTime(new Date());
-            appForm.setDescription("test description");
-            appForm.setTitle("test title");
-            result.add(appForm);
-        }
-
-        return result;
+        return appFormService.getAppForms();
     }
 
     @PostMapping
-    public AppForm addAppForm(AppForm appForm) {
+    public AppForm addAppForm(@RequestBody AppForm appForm) {
         return appFormService.addAppForm(appForm);
     }
 
     @PutMapping
-    public AppForm updateAppForm(AppForm appForm) throws AppException {
+    public AppForm updateAppForm(@RequestBody AppForm appForm) throws AppException {
         return appFormService.updateAppForm(appForm);
     }
 

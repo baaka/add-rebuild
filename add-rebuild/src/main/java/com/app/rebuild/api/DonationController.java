@@ -22,7 +22,7 @@ public class DonationController {
     }
 
     @PostMapping
-    public Donation addAppForm(DonationRequestModel requestModel) {
+    public Donation addAppForm(@RequestBody DonationRequestModel requestModel) {
         return donationService.addDonation(requestModel);
     }
 

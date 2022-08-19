@@ -35,16 +35,19 @@ const AppForm = ({title, description, creationTime, author, donations}) => {
     };
 
     return (
-        <Card sx={{maxWidth: 345}}>
+        <Card sx={{width: 400}}>
             <CardHeader
                 avatar={
                     <Avatar sx={{bgcolor: red[500]}} aria-label="recipe">
-                        R
+                        {author.username.toUpperCase().charAt(0)}
                     </Avatar>
                 }
                 title={title}
                 subheader={format(Date.parse(creationTime), getDefaultDateTimeFormat())}
             />
+            <Typography style={{marginLeft: 20}} variant="body2" color="text.secondary">
+                <b>Author: {author.username}</b>
+            </Typography>
             <CardMedia
                 component="img"
                 image="https://img.freepik.com/free-vector/businessman-get-idea_1133-350.jpg"
