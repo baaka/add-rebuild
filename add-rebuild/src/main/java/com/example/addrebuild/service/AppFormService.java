@@ -40,4 +40,9 @@ public class AppFormService {
         appFormRepository.deleteById(appFormId);
     }
 
+    public AppForm getAppFormById(long appFormId) {
+        AppForm appForm = appFormRepository.findById(appFormId).orElse(null);
+        return appForm;
+    }
+
 }
