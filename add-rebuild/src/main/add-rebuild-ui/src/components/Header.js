@@ -1,4 +1,5 @@
 import {AppBar, Button, makeStyles, Toolbar, Typography} from "@material-ui/core";
+import {login} from "../api/service/userService";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -26,6 +27,12 @@ const Header = () => {
                         <Button color="inherit" onClick={()=>{}}>Logout</Button>
                     </div>
                 </Toolbar>
+                <Button onClick={()=> {
+                    login({
+                        username:"admin",
+                        password:"admin",
+                    })
+                }}>Login</Button>
             </AppBar>
         </div>
     )
