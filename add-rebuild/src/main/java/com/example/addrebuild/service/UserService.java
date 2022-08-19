@@ -1,10 +1,12 @@
 package com.example.addrebuild.service;
 
 import com.example.addrebuild.domain.User;
+import com.example.addrebuild.model.AuthenticationRequest;
 import com.example.addrebuild.model.UserRequestModel;
 import com.example.addrebuild.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -93,4 +95,29 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
+    public void login(AuthenticationRequest authRequest) {
+
+        User user = userRepo.findByUsername(authRequest.username);
+
+        if(user == null) {
+            throw new RuntimeException( "USER_OR_PASSWORD_IS_INCORRECT");
+        }
+        if (!passwordEncoder.matches(authRequest.password, user.getPassword())) {
+            throw new RuntimeException( "USER_OR_PASSWORD_IS_INCORRECT");
+        }
+        if (user.isBlocked()) {
+            throw new RuntimeException( "USER_IS_BLOCKED");
+        }
+
+        authenticateUser(user);
+    }
+
+    private User authenticateUser(User user) {
+        if (user != null) {
+            Authentication auth = new UsernamePasswordAuthenticationToken(user, "", user.getRoles());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+
+        return user;
+    }
 }

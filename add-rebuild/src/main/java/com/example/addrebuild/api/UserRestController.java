@@ -2,6 +2,7 @@ package com.example.addrebuild.api;
 
 import com.example.addrebuild.AppConstants;
 import com.example.addrebuild.domain.User;
+import com.example.addrebuild.model.AuthenticationRequest;
 import com.example.addrebuild.model.UserRequestModel;
 import com.example.addrebuild.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,10 @@ public class UserRestController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         userService.delete(id);
+    }
+
+    @PostMapping("/login")
+    public void login(@RequestBody AuthenticationRequest authRequest)  {
+        userService.login(authRequest);
     }
 }
