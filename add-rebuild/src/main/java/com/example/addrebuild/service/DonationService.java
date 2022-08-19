@@ -9,6 +9,8 @@ import com.example.addrebuild.repo.DonationRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(rollbackFor = AppException.class)
 public class DonationService {
@@ -23,6 +25,10 @@ public class DonationService {
         this.donationRepo = donationRepo;
         this.appFormService = appFormService;
         this.userService = userService;
+    }
+
+    public List<Donation> getDonationsByAppFormId(long appFormId) {
+        return donationRepo.getDonationsByAppAppForm(appFormId);
     }
 
     public Donation addDonation(DonationRequestModel request) {
