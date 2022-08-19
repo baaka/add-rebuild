@@ -8,10 +8,19 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/")
 public class HomeController {
-
     @GetMapping
     public ModelAndView home() {
-        return new ModelAndView("redirect:" + "index.html");
+        return new ModelAndView("redirect:app/index.html");
+    }
+
+    @GetMapping("/app/appForm")
+    public ModelAndView task() {
+        return new ModelAndView("forward:index.html");
+    }
+
+    @GetMapping("/app/donation")
+    public ModelAndView topUsers() {
+        return new ModelAndView("forward:index.html");
     }
 
 }
