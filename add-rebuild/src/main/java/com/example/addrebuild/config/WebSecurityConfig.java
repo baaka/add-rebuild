@@ -14,13 +14,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig  {
-    private final UserService userService;
-    private final  EncriptionConfig encriptionConfig;
 
     @Bean
-    AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder) throws Exception {
-        return builder.userDetailsService(userService)
-                .passwordEncoder(encriptionConfig.getPasswordEncoder()).and().build();
+    public AuthenticationManager authManager(HttpSecurity http, EncriptionConfig encriptionConfig, UserService userService)
+            throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userService)
+                .passwordEncoder(encriptionConfig.getPasswordEncoder())
+                .and()
+                .build();
     }
 
     @Bean

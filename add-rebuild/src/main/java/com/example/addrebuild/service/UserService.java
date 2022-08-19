@@ -82,7 +82,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return getByUsername(username);
+        return userRepo.findByUsername(username);
     }
 
     public User getCurrentUser() {

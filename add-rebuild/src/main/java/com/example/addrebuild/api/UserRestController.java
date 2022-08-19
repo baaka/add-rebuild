@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(AppConstants.APP_REST_CONTEXT_PATH + "/users")
@@ -17,7 +18,9 @@ public class UserRestController {
 
     @GetMapping
     public List<User> load(){
-        return userService.load();
+        return userService.load().stream()
+                .peek(u->u.setPassword(""))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

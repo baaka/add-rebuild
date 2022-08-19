@@ -69,6 +69,9 @@ public class User implements UserDetails, Serializable {
         return roles.contains(Role.ADMIN);
     }
 
-
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
 }
