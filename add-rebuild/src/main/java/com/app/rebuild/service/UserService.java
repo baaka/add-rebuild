@@ -1,96 +1,118 @@
 package com.app.rebuild.service;
 
-import com.app.rebuild.domain.User;
-import com.app.rebuild.repo.UserRepo;
-import com.app.rebuild.model.UserRequestModel;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.app.rebuild.domain.auth.Permission;
+import com.app.rebuild.domain.auth.User;
+import com.app.rebuild.exception.AppException;
+import com.app.rebuild.model.PermissionModel;
+import com.app.rebuild.model.UserModel;
+import com.app.rebuild.model.helper.UserModelHelper;
+import com.app.rebuild.repo.auth.UserRepository;
+import com.app.rebuild.security.SecurityUtil;
+import com.app.rebuild.security.UserPrincipal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-@RequiredArgsConstructor
+@Transactional(rollbackFor = AppException.class)
 public class UserService implements UserDetailsService {
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepo userRepo;
 
-    public List<User> load() {
-        return userRepo.findAll();
-    }
+    private final UserRepository userRepository;
+    private final PermissionsService permissionsService;
 
-
-    public User getByUsername(String username) {
-        User user = userRepo.findByUsername(username);
-        if (user != null) {
-            user.setPassword("");
-        }
-        return user;
-    }
-
-    public User getById(Long id) {
-        User user = userRepo.findById(id).orElse(null);
-        if (user != null) {
-            user.setPassword("");
-        }
-
-        return user;
-    }
-
-    public User add(UserRequestModel user) {
-        User savedUser = userRepo.save(User.builder()
-                .username(user.username)
-                .email(user.email)
-                .password(passwordEncoder.encode(user.password))
-                .nickname(user.nickname)
-                .blocked(user.blocked)
-                .active(user.active)
-                .IDNumber(user.IDNumber)
-                .build());
-
-        return savedUser;
-    }
-
-    public User update(UserRequestModel user, Long id) {
-        User currentUser = getCurrentUser();
-        User u = userRepo.findById(id).get();
-
-        if(u.getId() != currentUser.getId() && !currentUser.isAdmin()) {
-            return null;
-        }
-
-        u.setUsername(user.username);
-        u.setPassword(passwordEncoder.encode(user.password));
-        u.setEmail(user.email);
-        u.setNickname(user.nickname);
-        u.setActive(user.active);
-        u.setBlocked(user.blocked);
-        u.setIDNumber(user.IDNumber);
-
-        return userRepo.save(u);
-    }
-
-    public void delete(Long id) {
-        userRepo.deleteById(id);
+    public UserService(UserRepository userRepository, PermissionsService permissionsService) {
+        this.userRepository = userRepository;
+        this.permissionsService = permissionsService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findByUsername(username);
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return new UserPrincipal(UserModelHelper.getModel(user), user.getPassword());
+        }
+        String message = "cannot find username: " + username;
+        log.error(message);
+        throw new UsernameNotFoundException(message);
+    }
+
+    public void changePassword(String currentPassword, String newPassword) throws AppException {
+        User currentUser = getCurrentUser();
+        if (!new BCryptPasswordEncoder(12).matches(currentPassword, currentUser.getPassword())) {
+            throw new AppException(AppException.Type.INVALID_VALUE, "Invalid Password Provided!");
+        }
+
+        currentUser.setPassword(getEncodedPassword(newPassword));
+        userRepository.saveAndFlush(currentUser);
+    }
+
+    public List<UserModel> getUsers() {
+        return UserModelHelper.getModels(userRepository.findAll());
+    }
+
+    public UserModel createUser(UserModel userModel) throws AppException {
+        if (userModel.getId() != 0 || userModel.getUsername() == null || userModel.getUsername().trim().isEmpty() ||
+                userModel.getNewSimplePassword() == null || userModel.getNewSimplePassword().trim().isEmpty()) {
+            throw new AppException(AppException.Type.INVALID_VALUE, "Invalid user fields!");
+        }
+
+        User user = UserModelHelper.getEntity(userModel);
+        user.setPassword(getEncodedPassword(userModel.getNewSimplePassword()));
+
+        return UserModelHelper.getModel(userRepository.save(user));
     }
 
     public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            return getByUsername(authentication.getName());
-        }
-        return null;
+        return userRepository.findByUsername(SecurityUtil.getPrincipalName());
     }
 
+    public UserModel getCurrentUserModel() {
+        return UserModelHelper.getModel(getCurrentUser());
+    }
+
+    private String getEncodedPassword(String simplePassword) {
+        simplePassword = simplePassword.trim();
+        return new BCryptPasswordEncoder(12).encode(simplePassword);
+    }
+
+    public void updateUserPermissions(long userId, List<PermissionModel> permissionModels) {
+        User user = userRepository.getById(userId);
+        if (permissionModels.size() > 0) {
+            List<Permission> permissions = permissionsService.loadPermissionsByIds(permissionModels.stream().map(PermissionModel::getId).collect(Collectors.toList()));
+            user.setPermissions(permissions);
+        } else {
+            user.setPermissions(null);
+        }
+        userRepository.save(user);
+    }
+
+    public User findUserById(long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public UserModel updateUser(UserModel userModel) {
+        User user = userRepository.getById(userModel.getId());
+        if (userModel.getNewSimplePassword() != null && !userModel.getNewSimplePassword().trim().isEmpty()) {
+            user.setPassword(getEncodedPassword(userModel.getNewSimplePassword()));
+        }
+        user.setFirstName(userModel.getFirstName());
+        user.setLastName(userModel.getLastName());
+        user.setPhone(userModel.getPhone());
+        user.setEmail(userModel.getEmail());
+        user.setIdentificationNumber(userModel.getIdentificationNumber());
+
+        return userModel;
+    }
+
+    public User getById(long userId) {
+        return userRepository.getById(userId);
+    }
 }

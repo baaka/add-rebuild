@@ -21,7 +21,6 @@ public class AppException extends Exception {
         GENERAL_ERROR("GENERAL_ERROR"),
         FIELD_REQUIRED("FIELD_REQUIRED"),
         INVALID_VALUE("INVALID_VALUE"),
-        CODE_UNIQUE("CODE_UNIQUE"),
         FORBIDDEN("FORBIDDEN");
 
         private final String code;
@@ -41,6 +40,6 @@ public class AppException extends Exception {
 
     @Override
     public String toString() {
-        return "TruckTrackerException: " + getMessage();
+        return "AddRebuildException: " + getMessage();
     }
 }

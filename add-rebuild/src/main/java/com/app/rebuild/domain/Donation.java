@@ -1,5 +1,6 @@
 package com.app.rebuild.domain;
 
+import com.app.rebuild.domain.auth.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

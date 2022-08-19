@@ -2,7 +2,7 @@ package com.app.rebuild.service;
 
 import com.app.rebuild.domain.AppForm;
 import com.app.rebuild.domain.Donation;
-import com.app.rebuild.domain.User;
+import com.app.rebuild.domain.auth.User;
 import com.app.rebuild.exception.AppException;
 import com.app.rebuild.model.DonationRequestModel;
 import com.app.rebuild.repo.DonationRepo;

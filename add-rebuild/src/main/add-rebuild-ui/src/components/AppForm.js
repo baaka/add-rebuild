@@ -13,10 +13,8 @@ import {red} from '@mui/material/colors';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {format} from "date-fns";
 import {getDefaultDateTimeFormat} from "../appUtil";
-import {Box} from "@material-ui/core";
 
 const ExpandMore = styled((props) => {
     const {expand, ...other} = props;
@@ -43,11 +41,6 @@ const AppForm = ({title, description, creationTime, author, donations}) => {
                     <Avatar sx={{bgcolor: red[500]}} aria-label="recipe">
                         R
                     </Avatar>
-                }
-                action={
-                    <IconButton aria-label="settings">
-                        <MoreVertIcon/>
-                    </IconButton>
                 }
                 title={title}
                 subheader={format(Date.parse(creationTime), getDefaultDateTimeFormat())}
