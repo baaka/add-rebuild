@@ -48,6 +48,10 @@ const AppForm = ({id, title, description, creationTime, author, type, amountRequ
         calcTotalDonations(resp.data);
     }
 
+    const afterSubmit = () => {
+        fetchData();
+    };
+
     const calcTotalDonations = (data) => {
         let totalUSD = 0;
         let totalEUR = 0;
@@ -98,7 +102,7 @@ const AppForm = ({id, title, description, creationTime, author, type, amountRequ
 
     return (
         <Card sx={{width: 400}}>
-            <DonationAdd open={openAddDonation} setOpen={setOpenAddDonation} appFormId={id}/>
+            <DonationAdd open={openAddDonation} setOpen={setOpenAddDonation} appFormId={id} afterSubmit={afterSubmit}/>
             <CardHeader
                 avatar={
                     <Avatar sx={{bgcolor: red[500]}} aria-label="recipe">

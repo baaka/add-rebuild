@@ -28,13 +28,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const DonationAdd = ({open, setOpen, appFormId}) => {
+const DonationAdd = ({open, setOpen, appFormId, afterSubmit}) => {
     const classes = useStyles();
     const [amount, setAmount] = useState(0);
     const [currency, setCurrency] = useState(0);
 
     const submit = async () => {
         await createDonation({amount, currency, appFormId});
+        afterSubmit();
         setOpen(false);
     }
 

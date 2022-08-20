@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const AppFormAdd = ({open, setOpen}) => {
+const AppFormAdd = ({open, setOpen, afterSubmit}) => {
     const classes = useStyles();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -38,9 +38,9 @@ const AppFormAdd = ({open, setOpen}) => {
 
     const submit = async () => {
         await createAppForm({title, description, amountRequested, amountRequestedCurrency, type});
+        afterSubmit();
         setOpen(false);
     }
-
 
     return (
         <Modal

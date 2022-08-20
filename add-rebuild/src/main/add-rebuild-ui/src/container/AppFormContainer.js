@@ -28,20 +28,24 @@ const AppFormContainer = () => {
         setAppForms(resp.data);
     }
 
+    const afterSubmit = () => {
+        fetchData();
+    };
+
     return (<div style={{paddingTop: 70}}>
         <Grid container spacing={2}>
             {AppForms.map(e => <Grid item xs={3}>
                 <div style={{padding: 10}}>
                     <AppForm id={e.id} title={e.title} description={e.description} creationTime={e.creationTime}
                              author={e.author} type={e.type} amountRequested={e.amountRequested}
-                             amountRequestedCurrency={e.amountRequestedCurrency}/>
+                             amountRequestedCurrency={e.amountRequestedCurrency} />
                 </div>
             </Grid>)}
         </Grid>
         <Fab size="small" color="secondary" aria-label="add" className={classes.addApp}>
             <AddIcon onClick={() => setOpen(true)}/>
         </Fab>
-        <AppFormAdd open={open} setOpen={setOpen}/>
+        <AppFormAdd open={open} setOpen={setOpen} afterSubmit={afterSubmit}/>
     </div>);
 }
 
