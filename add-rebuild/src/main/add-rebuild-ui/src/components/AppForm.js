@@ -31,16 +31,29 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-const AppForm = ({id, title, description, creationTime, author, type, amountRequested, amountRequestedCurrency}) => {
+const AppForm = ({id, title, description, creationTime, author, type, index, contract, account, amountRequested, amountRequestedCurrency}) => {
     const [expanded, setExpanded] = React.useState(false);
     const [openAddDonation, setOpenAddDonation] = useState(false);
     const [donations, setDonations] = useState(null);
     const [totalDonatedUSD, setTotalDonatedUSD] = useState(0);
     const [totalDonatedEUR, setTotalDonatedEUR] = useState(0);
+    const [count, setCount] = useState(0);
 
     useEffect(() => {
         fetchData();
     }, [])
+
+    useEffect(async ()=> {
+        if(contract) {
+            let c = await contract.methods.getUpVotes(index).call();
+            setCount(c)
+            console.log(index)
+            console.log(index)
+            console.log(c)
+            console.log(c)
+
+        }
+    }, [contract])
 
     const fetchData = async () => {
         let resp = await getDonationsByAppFormId(id);
@@ -73,6 +86,10 @@ const AppForm = ({id, title, description, creationTime, author, type, amountRequ
         setExpanded(!expanded);
     };
 
+    const upvote = async () => {
+        await contract.methods.upVote(index).send({from: account})
+    }
+
     const getType = () => {
         let result = null;
         if (type) {
@@ -100,6 +117,20 @@ const AppForm = ({id, title, description, creationTime, author, type, amountRequ
         return result;
     };
 
+    const getImageByType = () => {
+        switch (type) {
+            case 'EDUCATION':
+                return "https://www.globeedtech.com/wp-content/uploads/2022/04/VGImage03-1-400x400.png";
+            case "HELP_NEEDED":
+                return "https://www.coursearc.com/wp-content/uploads/2020/04/support-400x400.png";
+            case "REBUILD":
+                return "https://join.pepper.com/wp-content/uploads/2018/12/Team_BuildTheProduct-400x400.png";
+            case "ENTERTAINMENT":
+                return "https://static.vecteezy.com/system/resources/thumbnails/002/002/873/small_2x/funny-gorilla-with-sunglasses-cool-style-free-vector.jpg";
+        }
+        return "https://img.freepik.com/free-vector/businessman-get-idea_1133-350.jpg";
+    }
+
     return (
         <Card sx={{width: 400}}>
             <DonationAdd open={openAddDonation} setOpen={setOpenAddDonation} appFormId={id} afterSubmit={afterSubmit}/>
@@ -125,7 +156,7 @@ const AppForm = ({id, title, description, creationTime, author, type, amountRequ
             </Typography>
             <CardMedia
                 component="img"
-                image="https://img.freepik.com/free-vector/businessman-get-idea_1133-350.jpg"
+                image={getImageByType()}
                 alt="Paella dish"
             />
             <CardContent style={{height: 100}}>
@@ -135,8 +166,9 @@ const AppForm = ({id, title, description, creationTime, author, type, amountRequ
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites">
-                    <HowToVoteIcon/>
+                    <HowToVoteIcon onClick={upvote} />
                 </IconButton>
+                {count}
                 <IconButton aria-label="share">
                     <VolunteerActivismIcon onClick={() => setOpenAddDonation(true)}/>
                 </IconButton>

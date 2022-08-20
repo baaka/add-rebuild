@@ -23,7 +23,7 @@ const  MainContainer = () => {
             <Fab size="small" color="secondary" aria-label="add" className={classes.addApp}>
                 <AddIcon onClick={() => setOpen(true)}/>
             </Fab>
-            <AppFormAdd open={open} setOpen={setOpen}/>
+            {/*<AppFormAdd open={open} setOpen={setOpen}/>*/}
         </div>
     );
     const MainContainer = () => {

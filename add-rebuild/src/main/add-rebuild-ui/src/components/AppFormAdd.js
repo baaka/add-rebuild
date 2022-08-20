@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const AppFormAdd = ({open, setOpen, afterSubmit}) => {
+const AppFormAdd = ({open, setOpen, afterSubmit, contract, account}) => {
     const classes = useStyles();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -37,6 +37,7 @@ const AppFormAdd = ({open, setOpen, afterSubmit}) => {
     const [amountRequestedCurrency, setAmountRequestedCurrency] = useState();
 
     const submit = async () => {
+        await contract.methods.addAppForm(title).send({from: account})
         await createAppForm({title, description, amountRequested, amountRequestedCurrency, type});
         afterSubmit();
         setOpen(false);
