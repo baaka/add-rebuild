@@ -11,4 +11,6 @@ import java.util.List;
 public interface DonationRepo extends JpaRepository<Donation, Long> {
     @Query("select d from Donation d where d.appForm.id=:appFormId")
     List<Donation> getDonationsByAppFormId(long appFormId);
+
+    List<Donation> findAllByOrderByCreationTimeDesc();
 }

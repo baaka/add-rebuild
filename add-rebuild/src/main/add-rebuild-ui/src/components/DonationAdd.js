@@ -47,15 +47,12 @@ const DonationAdd = ({open, setOpen, appFormId}) => {
             aria-describedby="simple-modal-description"
         >
             <div className={classes.paper}>
-                <div className={classes.title}>Add Application Form</div>
+                <div className={classes.title}>Add Donation</div>
                 <Box display={"flex"} justifyContent={"center"} pt={2}>
                     <TextField
                         className={classes.field}
                         label="Amount"
                         type="number"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
                         value={amount}
                         onChange={e => setAmount(e.target.value)}
                     />

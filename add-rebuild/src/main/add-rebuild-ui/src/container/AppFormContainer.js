@@ -33,7 +33,8 @@ const AppFormContainer = () => {
             {AppForms.map(e => <Grid item xs={3}>
                 <div style={{padding: 10}}>
                     <AppForm id={e.id} title={e.title} description={e.description} creationTime={e.creationTime}
-                             author={e.author}/>
+                             author={e.author} type={e.type} amountRequested={e.amountRequested}
+                             amountRequestedCurrency={e.amountRequestedCurrency}/>
                 </div>
             </Grid>)}
         </Grid>

@@ -1,7 +1,7 @@
-import {Button, makeStyles, TextareaAutosize} from "@material-ui/core";
-import {Box, Modal, TextField} from "@mui/material";
+import {Button, makeStyles} from "@material-ui/core";
+import {Box, MenuItem, Modal, Select, TextField} from "@mui/material";
 import {useState} from "react";
-import {createAppForm, getAppForms} from "../api/service/appFormService";
+import {createAppForm} from "../api/service/appFormService";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -30,11 +30,14 @@ const useStyles = makeStyles((theme) => ({
 
 const AppFormAdd = ({open, setOpen}) => {
     const classes = useStyles();
-    const [title, setTitle]= useState("");
-    const [description, setDescription]= useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [type, setType] = useState(0);
+    const [amountRequested, setAmountRequested] = useState();
+    const [amountRequestedCurrency, setAmountRequestedCurrency] = useState();
 
     const submit = async () => {
-        await createAppForm({title, description});
+        await createAppForm({title, description, amountRequested, amountRequestedCurrency, type});
         setOpen(false);
     }
 
@@ -54,8 +57,23 @@ const AppFormAdd = ({open, setOpen}) => {
                         className={classes.field}
                         label="Title"
                         value={title}
-                        onChange={e=>setTitle(e.target.value)}
+                        onChange={e => setTitle(e.target.value)}
                     />
+                </Box>
+                <Box display={"flex"} justifyContent={"center"} pt={2}>
+                    <Select
+                        className={classes.field}
+                        value={type}
+                        label="Type"
+                        onChange={e => setType(e.target.value)}
+                    >
+                        <MenuItem value={0}>General</MenuItem>
+                        <MenuItem value={1}>Rebuild</MenuItem>
+                        <MenuItem value={2}>Education</MenuItem>
+                        <MenuItem value={3}>Entertainment</MenuItem>
+                        <MenuItem value={4}>Help Needed</MenuItem>
+                        <MenuItem value={5}>Municipal Project</MenuItem>
+                    </Select>
                 </Box>
                 <Box display={"flex"} justifyContent={"center"} pt={2}>
                     <TextField
@@ -64,11 +82,31 @@ const AppFormAdd = ({open, setOpen}) => {
                         multiline
                         rows={8}
                         value={description}
-                        onChange={e=>setDescription(e.target.value)}
+                        onChange={e => setDescription(e.target.value)}
                     />
                 </Box>
                 <Box display={"flex"} justifyContent={"center"} pt={2}>
-                    <Button variant={"contained"} onClick={submit} >Submit</Button>
+                    <TextField
+                        className={classes.field}
+                        label="Requested Amount"
+                        type="number"
+                        value={amountRequested}
+                        onChange={e => setAmountRequested(e.target.value)}
+                    />
+                </Box>
+                <Box display={"flex"} justifyContent={"center"} pt={2}>
+                    <Select
+                        className={classes.field}
+                        value={amountRequestedCurrency}
+                        label="Age"
+                        onChange={e => setAmountRequestedCurrency(e.target.value)}
+                    >
+                        <MenuItem value={0}>USD</MenuItem>
+                        <MenuItem value={1}>EUR</MenuItem>
+                    </Select>
+                </Box>
+                <Box display={"flex"} justifyContent={"center"} pt={2}>
+                    <Button variant={"contained"} onClick={submit}>Submit</Button>
                 </Box>
             </div>
         </Modal>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect} from "react";
+import {useEffect, useState} from 'react';
 import {styled} from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -17,7 +17,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {format} from "date-fns";
 import {getDefaultDateTimeFormat} from "../appUtil";
 import DonationAdd from "./DonationAdd";
-import {useState} from "react";
 import {getDonationsByAppFormId} from "../api/service/donationService";
 import InfoCard from "./InfoCard";
 
@@ -32,10 +31,12 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-const AppForm = ({id, title, description, creationTime, author}) => {
+const AppForm = ({id, title, description, creationTime, author, type, amountRequested, amountRequestedCurrency}) => {
     const [expanded, setExpanded] = React.useState(false);
     const [openAddDonation, setOpenAddDonation] = useState(false);
     const [donations, setDonations] = useState(null);
+    const [totalDonatedUSD, setTotalDonatedUSD] = useState(0);
+    const [totalDonatedEUR, setTotalDonatedEUR] = useState(0);
 
     useEffect(() => {
         fetchData();
@@ -44,10 +45,55 @@ const AppForm = ({id, title, description, creationTime, author}) => {
     const fetchData = async () => {
         let resp = await getDonationsByAppFormId(id);
         setDonations(resp.data.length > 0 ? resp.data : null);
+        calcTotalDonations(resp.data);
     }
+
+    const calcTotalDonations = (data) => {
+        let totalUSD = 0;
+        let totalEUR = 0;
+        if (data && data.length > 0) {
+            for (let d in data) {
+                if (data[d].currency === 'USD') {
+                    totalUSD += data[d].amount;
+                } else {
+                    totalEUR += data[d].amount;
+                }
+            }
+        }
+
+        setTotalDonatedUSD(totalUSD);
+        setTotalDonatedEUR(totalEUR);
+    };
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
+    };
+
+    const getType = () => {
+        let result = null;
+        if (type) {
+            switch (type) {
+                case 'GENERAL':
+                    result = 'General';
+                    break;
+                case 'REBUILD':
+                    result = 'Rebuild';
+                    break;
+                case 'EDUCATION':
+                    result = 'Education';
+                    break;
+                case 'ENTERTAINMENT':
+                    result = 'Entertainment';
+                    break;
+                case 'HELP_NEEDED':
+                    result = 'Help Needed';
+                    break;
+                case 'MUNICIPAL':
+                    result = 'Municipal Project';
+                    break;
+            }
+        }
+        return result;
     };
 
     return (
@@ -63,7 +109,15 @@ const AppForm = ({id, title, description, creationTime, author}) => {
                 subheader={format(Date.parse(creationTime), getDefaultDateTimeFormat())}
             />
             <Typography style={{marginLeft: 20}} variant="body2" color="text.secondary">
-                <b>Author: {author.username}</b>
+                <div>
+                    <b>Author: {author.username}</b>
+                    <br/>
+                    {type && <b>Type: {getType()}</b>}
+                    <br/>
+                    {amountRequested && <b>Amount Requested: {amountRequested} {amountRequestedCurrency}</b>}
+                    <br/>
+                    {<b>Amount Donated: {totalDonatedUSD} USD, {totalDonatedEUR} EUR</b>}
+                </div>
             </Typography>
             <CardMedia
                 component="img"

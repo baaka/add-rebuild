@@ -28,7 +28,7 @@ public class DonationService {
     }
 
     public List<Donation> getDonations() {
-        return donationRepo.findAll();
+        return donationRepo.findAllByOrderByCreationTimeDesc();
     }
 
     public List<Donation> getDonationsByAppFormId(long appFormId) {

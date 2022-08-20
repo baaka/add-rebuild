@@ -32,4 +32,15 @@ public class AppForm {
     @Column(name = "CREATION_TIME")
     private Date creationTime;
 
+    @Column(name = "AMOUNT_REQUESTED")
+    private Double amountRequested;
+
+    @Enumerated
+    @Column(name = "AMOUNT_REQUESTED_CURRENCY")
+    private Currency amountRequestedCurrency;
+
+    @Enumerated
+    @Column(name = "TYPE")
+    private AppFormType type;
+
 }
