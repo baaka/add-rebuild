@@ -101,8 +101,8 @@ const AppFormAdd = ({open, setOpen}) => {
                         label="Age"
                         onChange={e => setAmountRequestedCurrency(e.target.value)}
                     >
-                        <MenuItem value={0}>USD</MenuItem>
-                        <MenuItem value={1}>EUR</MenuItem>
+                        <MenuItem value={0}>EUR</MenuItem>
+                        <MenuItem value={1}>USD</MenuItem>
                     </Select>
                 </Box>
                 <Box display={"flex"} justifyContent={"center"} pt={2}>

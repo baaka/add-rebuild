@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {getDonations} from "../api/service/donationService";
 import Donation from "../components/Donation";
+import DonationByYearAreaChart from "../components/DonationByYearAreaChart";
 
 const AppFormContainer = () => {
     const [donations, setDonations] = useState([]);
@@ -15,7 +16,10 @@ const AppFormContainer = () => {
     }
 
     return (<div style={{paddingTop: 70}}>
-        <Donation donations={donations}/>
+        {donations.length > 0 && <div>
+            <DonationByYearAreaChart donations={donations}/>
+            <Donation donations={donations}/>
+        </div>}
     </div>);
 }
 

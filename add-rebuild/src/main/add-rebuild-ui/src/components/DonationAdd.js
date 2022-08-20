@@ -64,8 +64,8 @@ const DonationAdd = ({open, setOpen, appFormId}) => {
                         label="Age"
                         onChange={e => setCurrency(e.target.value)}
                     >
-                        <MenuItem value={0}>USD</MenuItem>
-                        <MenuItem value={1}>EUR</MenuItem>
+                        <MenuItem value={0}>EUR</MenuItem>
+                        <MenuItem value={1}>USD</MenuItem>
                     </Select>
                 </Box>
                 <Box display={"flex"} justifyContent={"center"} pt={2}>
