@@ -16,6 +16,11 @@ public class DonationController {
 
     private final DonationService donationService;
 
+    @GetMapping
+    public List<Donation> getDonations() {
+        return donationService.getDonations();
+    }
+
     @GetMapping("/{appFormId}")
     public List<Donation> getDonations(@PathVariable long appFormId) {
         return donationService.getDonationsByAppFormId(appFormId);

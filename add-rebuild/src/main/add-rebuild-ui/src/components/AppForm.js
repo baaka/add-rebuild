@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect} from "react";
 import {styled} from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -15,6 +16,10 @@ import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {format} from "date-fns";
 import {getDefaultDateTimeFormat} from "../appUtil";
+import DonationAdd from "./DonationAdd";
+import {useState} from "react";
+import {getDonationsByAppFormId} from "../api/service/donationService";
+import InfoCard from "./InfoCard";
 
 const ExpandMore = styled((props) => {
     const {expand, ...other} = props;
@@ -27,8 +32,19 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-const AppForm = ({title, description, creationTime, author, donations}) => {
+const AppForm = ({id, title, description, creationTime, author}) => {
     const [expanded, setExpanded] = React.useState(false);
+    const [openAddDonation, setOpenAddDonation] = useState(false);
+    const [donations, setDonations] = useState(null);
+
+    useEffect(() => {
+        fetchData();
+    }, [])
+
+    const fetchData = async () => {
+        let resp = await getDonationsByAppFormId(id);
+        setDonations(resp.data.length > 0 ? resp.data : null);
+    }
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -36,6 +52,7 @@ const AppForm = ({title, description, creationTime, author, donations}) => {
 
     return (
         <Card sx={{width: 400}}>
+            <DonationAdd open={openAddDonation} setOpen={setOpenAddDonation} appFormId={id}/>
             <CardHeader
                 avatar={
                     <Avatar sx={{bgcolor: red[500]}} aria-label="recipe">
@@ -53,7 +70,7 @@ const AppForm = ({title, description, creationTime, author, donations}) => {
                 image="https://img.freepik.com/free-vector/businessman-get-idea_1133-350.jpg"
                 alt="Paella dish"
             />
-            <CardContent>
+            <CardContent style={{height: 100}}>
                 <Typography variant="body2" color="text.secondary">
                     {description}
                 </Typography>
@@ -63,7 +80,7 @@ const AppForm = ({title, description, creationTime, author, donations}) => {
                     <HowToVoteIcon/>
                 </IconButton>
                 <IconButton aria-label="share">
-                    <VolunteerActivismIcon/>
+                    <VolunteerActivismIcon onClick={() => setOpenAddDonation(true)}/>
                 </IconButton>
                 {donations && <ExpandMore
                     expand={expanded}
@@ -77,12 +94,7 @@ const AppForm = ({title, description, creationTime, author, donations}) => {
             {donations && <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     {donations.map(e => <Typography>
-                        <div>
-                            <ol>
-                                <li>Author: {e.author}</li>
-                                <li>Amount:{e.amount} {e.currency}</li>
-                            </ol>
-                        </div>
+                        <InfoCard data={e}/>
                     </Typography>)}
                 </CardContent>
             </Collapse>}

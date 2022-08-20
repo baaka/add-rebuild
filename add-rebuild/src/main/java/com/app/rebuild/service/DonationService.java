@@ -2,13 +2,13 @@ package com.app.rebuild.service;
 
 import com.app.rebuild.domain.AppForm;
 import com.app.rebuild.domain.Donation;
-import com.app.rebuild.domain.auth.User;
 import com.app.rebuild.exception.AppException;
 import com.app.rebuild.model.DonationRequestModel;
 import com.app.rebuild.repo.DonationRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,8 +27,12 @@ public class DonationService {
         this.userService = userService;
     }
 
+    public List<Donation> getDonations() {
+        return donationRepo.findAll();
+    }
+
     public List<Donation> getDonationsByAppFormId(long appFormId) {
-        return donationRepo.getDonationsByAppForm(appFormId);
+        return donationRepo.getDonationsByAppFormId(appFormId);
     }
 
     public Donation addDonation(DonationRequestModel request) {
@@ -36,6 +40,7 @@ public class DonationService {
         donation.setAmount(request.getAmount());
         donation.setCurrency(request.getCurrency());
         donation.setAuthor(userService.getCurrentUser());
+        donation.setCreationTime(new Date());
 
         AppForm appForm = appFormService.getAppFormById(request.getAppFormId());
         donation.setAppForm(appForm);

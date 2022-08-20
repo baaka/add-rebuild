@@ -28,11 +28,11 @@ const AppFormContainer = () => {
         setAppForms(resp.data);
     }
 
-    return (<div style={{paddingTop:70}}>
-        <Grid container spacing={1}>
-            {AppForms.map(e => <Grid item xs={2}>
-                <div style={{padding:10}}>
-                    <AppForm title={e.title} description={e.description} creationTime={e.creationTime}
+    return (<div style={{paddingTop: 70}}>
+        <Grid container spacing={2}>
+            {AppForms.map(e => <Grid item xs={3}>
+                <div style={{padding: 10}}>
+                    <AppForm id={e.id} title={e.title} description={e.description} creationTime={e.creationTime}
                              author={e.author}/>
                 </div>
             </Grid>)}

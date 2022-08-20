@@ -1,14 +1,14 @@
 import './App.css';
-import MainContainer from "./container/MainContainer";
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import AppFormContainer from "./container/AppFormContainer";
 import Header from "./components/Header";
+import DonationContainer from "./container/DonationContainer";
 
 function App() {
     return (
         <div>
-            <Header/>
             <BrowserRouter>
+                <Header/>
                 <Switch>
                     <Route
                         path={"/app/appForm"}
@@ -19,7 +19,7 @@ function App() {
                     <Route
                         path={"/app/donation"}
                         render={() => (
-                            <MainContainer/>
+                            <DonationContainer/>
                         )}
                     />
                     <Redirect from="/" to="/app/appForm"/>
